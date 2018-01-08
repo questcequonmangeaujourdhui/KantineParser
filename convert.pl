@@ -5,13 +5,14 @@ use Data::Dumper;
 #Load the file 
 
 my $file = $ARGV[0];
+my $DEBUG = 0;
 
 #Load the file in array for ez processing 
 my $menu = `pdftotext -layout "$file" -`;
 my @file = split /\n/, $menu;
 
 #Go to days of the week
-@file = splice @file, 5;
+@file = splice @file, 2;
 
 my @daysOfTheWeek;
 
@@ -21,16 +22,18 @@ while($file[0] =~ / ([a-zA-Z0-9].*?)(  |$)/)
   $file[0] =~ s/$1/ /;
 }
 
+print Dumper(\@daysOfTheWeek) if $DEBUG;
 
 #Begin to catch the menu 
 @file = splice @file, 1;
-my $arrSize = scalar @daysOfTheWeek;
+my $arrSize = scalar @daysOfTheWeek or die("no days detected");
 
-while(scalar @file > 0)
+FILE: while(scalar @file > 0)
 {
   my $counter = 0;
   while($file[0] =~ /([^ |\n].*?)(  |$)/)
   {
+    last FILE if $daysOfTheWeek[$counter][0] eq $1; # R2
     push @{$daysOfTheWeek[$counter]}, $1;
     my $remove = quotemeta $1;
     $file[0] =~ s/$remove/ /;
@@ -55,10 +58,10 @@ while(scalar @file > 0)
 for(my $i = 0; $i < $arrSize; $i++)
 {
   my $lengthMenu = scalar @{$daysOfTheWeek[$i]};
-  @{$daysOfTheWeek[$i]} = splice @{$daysOfTheWeek[$i]},0, $lengthMenu - 2;
+  @{$daysOfTheWeek[$i]} = splice @{$daysOfTheWeek[$i]},0, $lengthMenu - 1;
 }
 
-#print Dumper(@daysOfTheWeek);
+print Dumper(\@daysOfTheWeek) if $DEBUG;
 
 #Print all the files 
 
@@ -66,6 +69,7 @@ my $fileHandler;
 for(my $i = 0; $i < $arrSize; $i++)
 {
   my $filename = $daysOfTheWeek[$i]->[0].".txt";
+  print "writing to filename: $filename\n" if $DEBUG;
   open($fileHandler, ">", $filename);
   if(not $fileHandler)
   {
