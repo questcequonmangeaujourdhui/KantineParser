@@ -12,7 +12,7 @@ my $menu = `pdftotext -layout "$file" -`;
 my @file = split /\n/, $menu;
 
 #Go to days of the week
-@file = splice @file, 2;
+@file = splice @file, 3;
 
 my @daysOfTheWeek;
 
