@@ -7,6 +7,8 @@ use Data::Dumper;
 my $file = $ARGV[0];
 my $DEBUG = 0;
 
+my $numberOfLineToDeleteForEachDay = 3;
+
 #Load the file in array for ez processing 
 my $menu = `pdftotext -layout "$file" -`;
 my @file = split /\n/, $menu;
@@ -58,7 +60,7 @@ FILE: while(scalar @file > 0)
 for(my $i = 0; $i < $arrSize; $i++)
 {
   my $lengthMenu = scalar @{$daysOfTheWeek[$i]};
-  @{$daysOfTheWeek[$i]} = splice @{$daysOfTheWeek[$i]},0, $lengthMenu - 1;
+  @{$daysOfTheWeek[$i]} = splice @{$daysOfTheWeek[$i]},0, $lengthMenu - $numberOfLineToDeleteForEachDay;
 }
 
 print Dumper(\@daysOfTheWeek) if $DEBUG;
