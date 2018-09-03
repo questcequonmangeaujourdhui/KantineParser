@@ -14,7 +14,9 @@ my $menu = `pdftotext -layout "$file" -`;
 my @file = split /\n/, $menu;
 
 #Go to days of the week
-@file = splice @file, 3;
+@file = splice @file, 2;
+
+print Dumper(\@file) if $DEBUG;
 
 my @daysOfTheWeek;
 
